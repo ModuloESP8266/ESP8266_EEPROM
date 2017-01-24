@@ -5,18 +5,24 @@
 //#include <cstring>
 
 #define MQTT_SERVER_WAN "idirect.dlinkddns.com"
+#define MQTT_SERVER_LAN "192.168.0.106"
 
 // WIFI ETB//
 const char* ssid_1 = "Consola";
 const char* pass_1 = "tyrrenal";
 
+const char* ssid_lan_casa = "Red Virtual 2";
+const char* pass_lan_casa = "2410meridian";
+
 int ssid_add=0;
 int pass_add=100;
 int mqtt_server_add=200;
 int mqtt_server_wan_add=300;
-int topic_sub_add=400;
+int topic_sub_add=400;  
 int topic_pub_add=500;
 int topic_sub_default_add=600;
+int ssid_lan_casa_add=700;
+int pass_lan_casa_add=800;
 
 String ssid=" ";
 String pass=" ";
@@ -25,6 +31,7 @@ String mqtt_server_wan=" ";
 String topic_sub=" ";
 String topic_pub=" ";
 String topic_sub_default=" ";
+
 
 //LED on ESP8266 GPIO2
 const int light1= 0;
@@ -66,7 +73,7 @@ void graba(int addr, String a) {
 
 WiFiClient wifiClient;
 
-PubSubClient client(MQTT_SERVER_WAN, 1883, callback, wifiClient);
+PubSubClient client(MQTT_SERVER_LAN, 1883, callback, wifiClient);
 
 void setup() {
   // put your setup code here, to run once:
@@ -74,19 +81,28 @@ void setup() {
  EEPROM.begin(4096);
   graba(ssid_add, "Consola");
   graba(pass_add, "tyrrenal");
+  graba(ssid_lan_casa_add, "Red Virtual 2");
+  graba(pass_lan_casa_add, "2410meridian");
   graba(mqtt_server_add, "192.168.0.106");
   graba(mqtt_server_wan_add, "idirect.dlinkddns.com");
   graba(topic_sub_add, "prueba/light1");
   graba(topic_pub_add, "prueba/light1/confirm");
   graba(topic_sub_default_add, "default");
+  
   delay(1000);
+  
   ssid=lee(ssid_add);
   pass=lee(pass_add);
+ // ssid_lan_casa=lee(ssid_lan_casa_add);
+  
   mqtt_server=lee(mqtt_server_add);
   mqtt_server_wan=lee(mqtt_server_wan_add);
   topic_sub=lee(topic_sub_add);
   topic_pub=lee(topic_pub_add);
-  topic_sub_default=lee(topic_sub_default_add);;
+  topic_sub_default=lee(topic_sub_default_add);
+
+
+  
   
   Serial.println(ssid.c_str());
   Serial.println(pass.c_str());
@@ -101,7 +117,7 @@ void setup() {
  WiFi.mode(WIFI_STA);
  
  //WiFi.begin(ssid.c_str(),pass.c_str());
-  WiFi.begin(ssid_1,pass_1);
+  WiFi.begin(ssid_lan_casa,pass_lan_casa);
   reconnect();
  delay(250);
 
@@ -168,7 +184,7 @@ void reconnect() {
   if(WiFi.status() != WL_CONNECTED){
     //debug printing
     Serial.print("Connecting to ");
-    Serial.println(ssid_1);
+    Serial.println(ssid_lan_casa);
 
     //loop while we wait for connection
     while (WiFi.status() != WL_CONNECTED) {
